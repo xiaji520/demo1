@@ -2,7 +2,6 @@ from django import forms
 from users.models import Users
 
 
-
 # 注册
 class RegisterForm(forms.Form):
     mobile = forms.CharField(max_length=14,
@@ -43,6 +42,7 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("该手机已注册,请直接登录!")
         else:
             return mobile
+
 
 # 登录
 class LoginForm(forms.Form):

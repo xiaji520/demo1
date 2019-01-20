@@ -4,17 +4,39 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.views import View
+
 from users.forms import RegisterForm, LoginForm
 from users.models import Users
 
 
-def register(request):  # 注册 ^register$
-    if request.method == "POST":
+class IndexView(View):
+    '''
+    首页
+    '''
+
+    def get(self, request):
+        return render(request, "users/index.html")
+
+
+
+class RegisterView(View):
+    '''
+    注册视图
+    '''
+    template_name = 'users/reg.html'
+
+    def get(self, request):
+        # 展示登录表单
+        return render(request, self.template_name)
+
+    def post(self, request):
+        # 完成用户信息的注册
         # 接收参数
         data = request.POST
-        # 验证数据合法性
-        form = RegisterForm(data)  # 实例化form对象
-        if form.is_valid():  # 合法
+        # 验证参数合法性 表单验证
+        form = RegisterForm(data)
+        if form.is_valid():
             # 获取清洗后的数据
             cleaned = form.cleaned_data
             # 将密码进行加密
@@ -31,23 +53,24 @@ def register(request):  # 注册 ^register$
             Users.objects.create(**data)
             # 跳转到登录页
             return redirect('users:登录')
-        else:  # 不合法
-            context = {
-                'errors': form.errors,
-            }
-            return render(request, "users/reg.html", context=context)
-    else:
-        return render(request, "users/reg.html")
+        else:
+            # 错误
+            return render(request, self.template_name, context={'errors': form.errors, })
 
 
-def login(request):  # 登录 ^login$
-    if request.method == "POST":
+class LoginView(View):
+    """登录视图"""
+
+    def get(self, request):
+        return render(request, 'users/login.html')
+
+    def post(self, request):
         # 接收参数
         data = request.POST
-        # 验证数据合法性
-        form = LoginForm(data)  # 实例化form对象
-        if form.is_valid():  # 合法
 
+        # 验证数据的合法性
+        form = LoginForm(data)
+        if form.is_valid():
             ################
             # session验证登录
             # mobile = form.cleaned_data.get('mobile')
@@ -69,7 +92,7 @@ def login(request):  # 登录 ^login$
             try:
                 Users.objects.get(mobile=mobile, password=password)
                 # 跳转到登录页
-                return HttpResponse('ok!')
+                return redirect(request, "users/index.html")
             except:
                 return render(request, "users/login.html")
 
@@ -78,5 +101,3 @@ def login(request):  # 登录 ^login$
                 'errors': form.errors,
             }
             return render(request, "users/login.html", context=context)
-    else:
-        return render(request, "users/login.html")

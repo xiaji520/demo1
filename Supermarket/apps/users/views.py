@@ -6,18 +6,9 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views import View
 
+from Supermarket.settings import SECRET_KEY
 from users.forms import RegisterForm, LoginForm
 from users.models import Users
-
-
-class IndexView(View):
-    '''
-    首页
-    '''
-
-    def get(self, request):
-        return render(request, "users/index.html")
-
 
 
 class RegisterView(View):
@@ -43,16 +34,18 @@ class RegisterView(View):
             # 取出清洗后的手机号
             mobile = cleaned.get('mobile')
             # 取出清洗后的密码
-            password = cleaned.get('password')
-            h = hashlib.md5(password.encode("utf-8"))  # 将传入的密码进行md5加密
-            password = h.hexdigest()
-            # print(name,password)
-            # 修改到数据库
-            data = {'mobile': mobile,
-                    'password': password}
-            Users.objects.create(**data)
-            # 跳转到登录页
-            return redirect('users:登录')
+            for _ in range(2000):
+                pwd = cleaned.get('password')
+                pass_str = "{}{}".format(pwd, SECRET_KEY)
+                h = hashlib.md5(pass_str.encode("utf-8"))  # 将传入的密码进行md5加密(加密2000次,并且加盐)
+                password = h.hexdigest()
+                # print(name,password)
+                # 修改到数据库
+                data = {'mobile': mobile,
+                        'password': password}
+                Users.objects.create(**data)
+                # 跳转到登录页
+                return redirect('users:登录')
         else:
             # 错误
             return render(request, self.template_name, context={'errors': form.errors, })
@@ -81,23 +74,32 @@ class LoginView(View):
             # 获取清洗后的数据
             cleaned = form.cleaned_data
             # 将密码进行加密
-            # 取出清洗后的用户名
+            # 取出清洗后的手机号
             mobile = cleaned.get('mobile')
             # 取出清洗后的密码
-            password = cleaned.get('password')
-            h = hashlib.md5(password.encode("utf-8"))  # 将传入的密码进行md5加密
-            password = h.hexdigest()
-            # print(name,password)
-            # 从数据库查询
-            try:
-                Users.objects.get(mobile=mobile, password=password)
-                # 跳转到登录页
-                return redirect(request, "users/index.html")
-            except:
-                return render(request, "users/login.html")
-
+            for _ in range(2000):
+                pwd = cleaned.get('password')
+                pass_str = "{}{}".format(pwd, SECRET_KEY)
+                h = hashlib.md5(pass_str.encode("utf-8"))  # 将传入的密码进行md5加密(加密2000次,并且加盐)
+                password = h.hexdigest()
+                # print(name,password)
+                # 从数据库查询
+                try:
+                    Users.objects.get(mobile=mobile, password=password)
+                    # 跳转到登录页
+                    return redirect('users:个人资料')
+                except:
+                    return render(request, "users/login.html")
         else:  # 不合法
             context = {
                 'errors': form.errors,
             }
             return render(request, "users/login.html", context=context)
+
+class InforView(View):
+    '''
+    个人资料
+    '''
+
+    def get(self, request):
+        return render(request, "users/infor.html")

@@ -1,16 +1,16 @@
 from django import forms
+from django.core import validators
+from django.core.validators import RegexValidator
+
 from users.models import Users
 
 
 # 注册
 class RegisterForm(forms.Form):
-    mobile = forms.CharField(max_length=14,
-                             min_length=11,
-                             error_messages={
-                                 'required': '请填写手机号!',
-                                 'min_length': '请输入至少十一个字符!',
-                                 'max_length': '请输入小于或等于十四个字符!'
-                             })
+    mobile = forms.CharField(max_length=11,
+                             error_messages={'required': '请填写手机号!'},
+                             validators=[RegexValidator(r'^1[3-9]\d{9}$', message="手机号码格式错误!")]
+                             )
     password = forms.CharField(max_length=20,
                                min_length=6,
                                error_messages={
@@ -46,12 +46,10 @@ class RegisterForm(forms.Form):
 
 # 登录
 class LoginForm(forms.Form):
-    mobile = forms.CharField(max_length=14,
-                             min_length=11,
+    mobile = forms.CharField(max_length=11,
                              error_messages={
                                  'required': '请填写手机号!',
-                                 'min_length': '请输入至少十一个字符!',
-                                 'max_length': '请输入小于或等于十四个字符!'
+                                 'max_length': '请输入十一位电话号码!',
                              })
     password = forms.CharField(max_length=20,
                                min_length=6,

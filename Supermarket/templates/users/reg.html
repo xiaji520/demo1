@@ -24,11 +24,11 @@
     <form class="form" method="post" action="">
         {% csrf_token %}
         <input type="text" name="mobile" placeholder="请输入手机号" class="login-name">
-        <p class="text-danger">{{ errors.mobile.0 }}</p>
+        <p class="am-text-danger">{{ errors.mobile.0 }}</p>
         <input type="password" name="password" placeholder="请输入密码" class="login-password">
-        <p class="text-danger">{{ errors.password.0 }}</p>
+        <p class="am-text-danger">{{ errors.password.0 }}</p>
         <input type="password" name="repassword" placeholder="确认密码" class="login-name">
-        <p class="text-danger">{{ errors.repassword.0 }}</p>
+        <p class="am-text-danger">{{ errors.repassword.0 }}</p>
         <div class="yzm" style="margin-top: 1.5rem;">
             <input type="text" class="reg-yzm" placeholder="输入验证码"/>
             <input type="button" class="yzm-hq" value="获取验证码"/>

@@ -50,12 +50,12 @@
 
 
     {% block content %}
-           <form class="form" method="post" action="">
+        <form class="form" method="post" action="">
         {% csrf_token %}
         <input type="text" name="mobile" id="mobile" placeholder="请输入用户名/手机号" class="login-name">
-        <p class="text-danger">{{ errors.mobile.0 }}</p>
+        <p class="am-text-danger">{{ errors.mobile.0 }}</p>
         <input type="password" name="password" id="password" placeholder="请输入密码" class="login-password">
-        <p class="text-danger">{{ errors.password.0 }}</p>
+        <p class="am-text-danger">{{ errors.password.0 }}</p>
         <input type="submit" class="login-btn" value="我要登录">
         <div class="agree">
             <a href="reg.html">免费注册</a>
@@ -68,7 +68,7 @@
             <li><a href=""><img src="{% static 'images/qqlogin.png' %}"/></a></li>
             <li><a href=""><img src="{% static 'images/sinalog.png' %}"/></a></li>
         </ul>
-    </form>
+        </form>
     {% endblock %}
 
     {% block footer %}

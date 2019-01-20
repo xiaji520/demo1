@@ -1,0 +1,5 @@
+[client]
+database = supermarket
+user = root
+password = xrj5201314
+default-character-set = utf8

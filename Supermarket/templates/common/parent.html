@@ -16,6 +16,7 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link href="{% static 'css/amazeui.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'css/check.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
     <script src="{% static 'js/time.js' %}"></script>
     <script src="{% static 'js/popup.mini.js' %}"></script>
@@ -58,8 +59,8 @@
         <p class="am-text-danger">{{ errors.password.0 }}</p>
         <input type="submit" class="login-btn" value="我要登录">
         <div class="agree">
-            <a href="reg.html">免费注册</a>
-            <a href="forgetpassword.html" class="forget">忘记密码？</a>
+            <a href="{% url 'users:注册' %}">免费注册</a>
+            <a href="{% url 'users:忘记密码' %}" class="forget">忘记密码？</a>
         </div>
         <div class="line"></div>
         <div class="line-text">第三方账号登录</div>

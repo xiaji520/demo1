@@ -37,7 +37,7 @@
         <div class="agree">
             <input type="checkbox" name="checkbox" value="同意" checked="">&nbsp;同意
             <a href="" class="xy">《用户协议》</a>
-            <div class="r-login">已有账号，请<a href="login.html" class="l-login">登录</a></div>
+            <div class="r-login">已有账号，请<a href="{% url 'users:登录' %}" class="l-login">登录</a></div>
         </div>
     </form>
 {% endblock %}

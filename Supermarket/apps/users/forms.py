@@ -124,20 +124,25 @@ class ForgetForm(forms.Form):
                              error_messages={'required': '请填写手机号!'},
                              validators=[RegexValidator(r'^1[3-9]\d{9}$', message="手机号码格式错误!")]
                              )
-    password = forms.CharField(max_length=20,
+    password2 = forms.CharField(max_length=20,
                                min_length=6,
                                error_messages={
                                    'required': '请填写密码!',
                                    'min_length': '请输入至少六个字符!',
                                    'max_length': '请输入小于或等于二十个字符!'
                                })
-    repassword = forms.CharField(max_length=20,
+    repassword2 = forms.CharField(max_length=20,
                                  min_length=6,
                                  error_messages={
                                      'required': '这是必填选项!',
                                      'min_length': '请输入至少六个字符!',
                                      'max_length': '请输入小于或等于二十个字符!'
                                  })
+    # 验证码
+    captcha = forms.CharField(max_length=6,
+                              error_messages={
+                                  'required': "验证码必须填写!"
+                              })
 
     def clean(self):
         pwd = self.cleaned_data.get("password")  # 密码
@@ -151,7 +156,7 @@ class ForgetForm(forms.Form):
         mobile = self.cleaned_data.get('mobile')
         flag = Users.objects.filter(mobile=mobile).exists()
         if flag:
-            # 存在 错误
+            # 存在 正确
             return mobile
         else:
             raise forms.ValidationError("该手机未注册,请注册!")

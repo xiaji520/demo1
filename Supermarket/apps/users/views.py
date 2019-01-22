@@ -13,10 +13,6 @@ from users.models import Users
 from users.helper import set_password, login, send_sms
 
 
-
-
-
-
 class RegisterView(View):
     '''注册视图'''
     template_name = 'users/reg.html'
@@ -169,9 +165,7 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
         context = {
             'user': user
         }
-
-        return render(request, "users/infor.html", context=context)
-
+        return render(request, 'users/infor.html',context=context)
     def post(self, request):
         # 接收参数
         data = request.POST
@@ -191,13 +185,13 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
             hometown = cleaned.get('hometown')
 
             # 保存数据库
-            Users.objects.filter(id=user_id).update(#nickname=nickname,
+            Users.objects.filter(id=user_id).update(nickname=nickname,
                                                     birthday=birthday,
                                                     school=school,
                                                     location=location,
                                                     hometown=hometown
                                                     )
-            return redirect("users/login.html")
+            return redirect("users:个人资料")
 
         else:  # 不合法
             context = {
@@ -206,7 +200,7 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
             return render(request, "users/infor.html", context=context)
 
 
-class ForgetView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登录session才能看到
+class ForgetView(View):  # 继承了VerifyLoginView,替换View,使登录session才能看到
     """忘记密码"""
 
     def get(self, request):
@@ -222,18 +216,19 @@ class ForgetView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登
             # 获取清洗后的数据
             cleaned = form.cleaned_data
             # 将密码进行加密
+            # 通过id查询数据
+            user_id = request.session.get('ID')
             # 取出清洗后的手机号
             mobile = cleaned.get('mobile')
             # 取出清洗后的密码
-            password = set_password(cleaned.get('password'))
+            password2 = set_password(cleaned.get('password2'))
             # 修改到数据库
             # 验证原密码是否存在,不能用get,用filter
-            if Users.objects.filter(mobile=mobile, password=password).exists():
-                return render(request, 'users/forgetpassword.html')
-
-            Users.objects.filter(mobile=mobile).update(password=password)
-            # 跳转到登录页
-            return redirect('users:登录')
+            if Users.objects.filter(mobile=mobile, id=user_id).exists():
+                # 更新密码
+                Users.objects.filter(id=user_id).update(password=password2)
+                # 跳转到登录页
+                return redirect('users:登录')
         else:
             # 错误
             return render(request, 'users/forgetpassword.html', context={'errors': form.errors, })
@@ -248,26 +243,23 @@ class PasswordView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使�
     def post(self, request):
         # 接收参数
         data = request.POST
-
-        # 验证数据的合法性
         form = PasswordForm(data)
-
-        # 通过id查询数据
-        user_id = request.session.get('ID')
-        # print(user_id)
-        user = Users.objects.get(pk=user_id)
+        # 验证数据的合法性
         if form.is_valid():
             # 获取清洗后的数据
             cleaned = form.cleaned_data
             # 取出清洗后的密码
             # 将密码进行加密
             password = set_password(cleaned.get('password'))
+            # 通过id查询数据
+            user_id = request.session.get('ID')
+            # print(user_id)
             # 修改到数据库
             # 验证原密码是否存在,不能用get,用filter
-            if Users.objects.filter(user=user, password=password).exists():
+            if Users.objects.filter(id=user_id, password=password).exists():
                 password2 = set_password(cleaned.get('password2'))
-                # 验证原密码是否存在
-                Users.objects.filter(password=password).update(password=password2)
+                # 更新密码
+                Users.objects.filter(id=user_id).update(password=password2)
                 # 跳转到登录页
                 return redirect('users:登录')
         else:

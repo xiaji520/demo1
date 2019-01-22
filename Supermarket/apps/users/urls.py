@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from users.views import RegisterView, LoginView, InforView, ForgetView, PasswordView
+from users.views import RegisterView, LoginView, InforView, ForgetView, PasswordView, SendMsg
 
 urlpatterns = [
     url(r'^register/$', RegisterView.as_view(), name='注册'),
@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^infor/$', InforView.as_view(), name='个人资料'),
     url(r'^forgetpassword/$', ForgetView.as_view(), name='忘记密码'),
     url(r'^password/$', PasswordView.as_view(), name='修改密码'),
+    url(r'^sendmsg/$', SendMsg.as_view(), name='发送短信验证'),
 ]

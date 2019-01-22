@@ -29,7 +29,7 @@
             <li>
 {#                <a href="">#}
                     <i>昵称</i>
-                    <input name="nickname" class="infor-tele" placeholder="自己的昵称"/>
+                    <input name="nickname" class="infor-tele" placeholder="{{ user.nickname }}"/>
 {#                </a>#}
             </li>
             <li>
@@ -48,7 +48,7 @@
             <li>
 {#                <a href="">#}
                     <i>生日</i>
-                    <input class="infor-tele" name="birthday" placeholder="出生日期"/>
+                    <input class="infor-tele" name="birthday" placeholder="{{ user.birthday }}"/>
 {#                </a>#}
             </li>
         </ul>
@@ -58,19 +58,19 @@
 
             <li>
                 <i>学校</i>
-                <input class="infor-tele" name="school" placeholder="就读于哪个学校"/>
+                <input class="infor-tele" name="school" placeholder="{{ user.school }}"/>
             </li>
             <li>
                 <i>位置</i>
-                <input class="infor-tele" name="location" placeholder="详细地址"/>
+                <input class="infor-tele" name="location" placeholder="{{ user.location }}"/>
             </li>
             <li>
                 <i>故乡</i>
-                <input class="infor-tele" name="hometown" placeholder="来自哪里"/>
+                <input class="infor-tele" name="hometown" placeholder="{{ user.hometown }}"/>
             </li>
             <li>
                 <i>手机</i>
-                <input class="infor-tele" name="mobile2" placeholder="例如:13012345678"/>
+                <input class="infor-tele" name="mobile" disabled="disabled" placeholder="{{ user.mobile }}"/>
             </li>
 
 

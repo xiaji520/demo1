@@ -4,10 +4,8 @@ import uuid
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-
 from django.views import View
 from django_redis import get_redis_connection
-
 from Supermarket.settings import SECRET_KEY
 from db.base_view import VerifyLoginView
 from users.forms import RegisterForm, LoginForm, InforForm, ForgetForm, PasswordForm
@@ -15,10 +13,12 @@ from users.models import Users
 from users.helper import set_password, login, send_sms
 
 
+
+
+
+
 class RegisterView(View):
-    '''
-    注册视图
-    '''
+    '''注册视图'''
     template_name = 'users/reg.html'
 
     def get(self, request):
@@ -185,15 +185,13 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
             cleaned = form.cleaned_data
             # 取出清洗后信息
             nickname = cleaned.get('nickname')
-            # sex = cleaned.get('sex')
             birthday = cleaned.get('birthday')
             school = cleaned.get('school')
             location = cleaned.get('location')
             hometown = cleaned.get('hometown')
 
             # 保存数据库
-            Users.objects.filter(id=user_id).update(nickname=nickname,
-                                                    # sex=sex,
+            Users.objects.filter(id=user_id).update(#nickname=nickname,
                                                     birthday=birthday,
                                                     school=school,
                                                     location=location,

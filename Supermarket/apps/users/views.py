@@ -118,7 +118,7 @@ class LoginView(View):
         if form.is_valid():
             # id
             # form.verify_password(request)
-            ################  写在helper.py里面封装了
+            #################  写在helper.py里面封装了
             # session验证登录
             # user = form.cleaned_data.get('user')
             # request.session['ID'] = user.id
@@ -140,7 +140,7 @@ class LoginView(View):
             try:
                 Users.objects.get(mobile=mobile, password=password)
                 # 跳转到登录页
-                return redirect('users:个人资料')
+                return redirect('users:个人中心')
             except:
                 return render(request, "users/login.html")
         else:  # 不合法
@@ -148,6 +148,16 @@ class LoginView(View):
                 'errors': form.errors,
             }
             return render(request, "users/login.html", context=context)
+
+
+class MemberView(VerifyLoginView):
+    """个人中心"""
+
+    def get(self, request):
+        return render(request, 'users/member.html')
+
+    def post(self, request):
+        pass
 
 
 class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登录session才能看到
@@ -165,40 +175,30 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
         context = {
             'user': user
         }
-        return render(request, 'users/infor.html',context=context)
+        return render(request, 'users/infor.html', context=context)
+
     def post(self, request):
         # 接收参数
         data = request.POST
-        # 验证数据的合法性
-        form = InforForm(data)
-        if form.is_valid():
-            # 获取id
-            user_id = request.session.get('ID')
+        head = request.FILES.get('head')
+        # 获取id
+        user_id = request.session.get('ID')
+        # 操作数据
+        user = Users.objects.get(pk=user_id)
+        user.nickname = data.get('nickname')
+        user.sex=data.get('sex')
+        user.birthday=data.get('birthday')
+        user.school=data.get('school')
+        user.location=data.get('location')
+        user.hometown=data.get('hometown')
+        if head is not None:
+            user.head = head
+        user.save()
 
-            # 获取清洗后的数据
-            cleaned = form.cleaned_data
-            # 取出清洗后信息
-            nickname = cleaned.get('nickname')
-            birthday = cleaned.get('birthday')
-            school = cleaned.get('school')
-            location = cleaned.get('location')
-            hometown = cleaned.get('hometown')
-
-            # 保存数据库
-            Users.objects.filter(id=user_id).update(nickname=nickname,
-                                                    birthday=birthday,
-                                                    school=school,
-                                                    location=location,
-                                                    hometown=hometown
-                                                    )
-            return redirect("users:个人资料")
-
-        else:  # 不合法
-            context = {
-                'errors': form.errors,
-            }
-            return render(request, "users/infor.html", context=context)
-
+        # 同时修改session
+        login(request, user)
+        # 合成响应
+        return redirect('users:个人中心')
 
 class ForgetView(View):  # 继承了VerifyLoginView,替换View,使登录session才能看到
     """忘记密码"""

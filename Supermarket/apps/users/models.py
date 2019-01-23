@@ -51,6 +51,8 @@ class Users(BaseModel):  # BaseModel
                                 blank=True,
                                 verbose_name="家乡"
                                 )  # 家乡地址
+    # 设置头像字段
+    head = models.ImageField(upload_to="head/%Y%m", default="head/memtx.png", verbose_name="用户头像")
 
     def __str__(self):
         return self.mobile

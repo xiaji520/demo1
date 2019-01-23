@@ -22,6 +22,7 @@ def set_password(password):
 def login(request, user):
     request.session['ID'] = user.id
     request.session['mobile'] = user.mobile
+    request.session['head'] = user.head
     request.session.set_expiry(0)
 
 

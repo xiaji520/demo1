@@ -15,42 +15,44 @@
 {% endblock %}
 {% block content %}
     <div style="height: 49px;"></div>
-    <form action="" class="form" method="post" >
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <ul class="safty1">
             <li>
-{#                <a href="">#}
-                    <i style="margin-top: 25px;">头像</i>
-                    <div class="infor-pic">
-                        <img src="{% static 'images/infortx.png' %}"/>
-                    </div>
-{#                </a>#}
+                {#                <a href="">#}
+                <i style="margin-top: 25px;">头像</i>
+                <div class="infor-pic">
+                    <img src="{{ MEDIA_URL }}{{ user.head }}"/>
+                </div>
+                {#                </a>#}
             </li>
             <li>
-{#                <a href="">#}
-                    <i>昵称</i>
-                    <input name="nickname" class="infor-tele" placeholder="{{ user.nickname }}"/>
-{#                </a>#}
-            </li>
-            <p class="am-text-danger">{{ errors.nickname.0 }}</p>
-            <li>
-{#                <a href="">#}
-                    <i>性别</i>
-                    <i class="infor-tele">
-                        <label class="am-radio-inline">
-                            <input type="radio" name="sex" checked="checked" value="1" data-am-ucheck>男
-                        </label>
-                        <label class="am-radio-inline">
-                            <input type="radio" name="sex" value="2" data-am-ucheck>女
-                        </label>
-                    </i>
-{#                </a>#}
+                <input type="file" name="head">
             </li>
             <li>
-{#                <a href="">#}
-                    <i>生日</i>
-                    <input class="infor-tele" name="birthday" placeholder="{{ user.birthday }}"/>
-{#                </a>#}
+                {#                <a href="">#}
+                <i>昵称</i>
+                <input name="nickname" class="infor-tele" value="{{ user.nickname|default:'' }}"/>
+                {#                </a>#}
+            </li>
+            <li>
+                {#                <a href="">#}
+                <i>性别</i>
+                <i class="infor-tele">
+                    <label class="am-radio-inline">
+                        <input type="radio" name="sex" checked="checked" value="1" data-am-ucheck>男
+                    </label>
+                    <label class="am-radio-inline">
+                        <input type="radio" name="sex" value="2" data-am-ucheck>女
+                    </label>
+                </i>
+                {#                </a>#}
+            </li>
+            <li>
+                {#                <a href="">#}
+                <i>生日</i>
+                <input type="date" class="infor-tele" name="birthday" value="{{ user.birthday|default:'' }}"/>
+                {#                </a>#}
             </li>
         </ul>
         <div style="height: 10px; background: #efefef;"></div>
@@ -59,29 +61,27 @@
 
             <li>
                 <i>学校</i>
-                <input class="infor-tele" name="school" placeholder="{{ user.school }}"/>
+                <input class="infor-tele" name="school" value="{{ user.school|default:'' }}"/>
             </li>
             <li>
                 <i>位置</i>
-                <input class="infor-tele" name="location" placeholder="{{ user.location }}"/>
+                <input class="infor-tele" name="location" value="{{ user.location |default:'' }}"/>
             </li>
             <li>
                 <i>故乡</i>
-                <input class="infor-tele" name="hometown" placeholder="{{ user.hometown }}"/>
+                <input class="infor-tele" name="hometown" value="{{ user.hometown|default:'' }}"/>
             </li>
             <li>
                 <i>手机</i>
                 <input class="infor-tele" name="mobile" disabled="disabled" placeholder="{{ user.mobile }}"/>
             </li>
 
-
+            <li>
+                <input type="submit" class="am-btn am-btn-warning" value="保存"/>
+            </li>
         </ul>
-        <input type="submit" class="infor-tele" value="保存">
+
     </form>
 
 {% endblock %}
 
-{% block footer %}
-    <script src="{% static 'js/jquery.min.js' %}"></script>
-    <script src="{% static 'js/amazeui.min.js' %}"></script>
-{% endblock %}

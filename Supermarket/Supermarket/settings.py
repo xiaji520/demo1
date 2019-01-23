@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',  # 添加渲染 MEDIA_URL 变量
             ],
         },
     },
@@ -155,3 +156,9 @@ SESSION_CACHE_ALIAS = "default"
 # 配置短信需要的key
 ACCESS_KEY_ID = "LTAI2qSiJdWP87em"
 ACCESS_KEY_SECRET = "FzORQ587PgGBoOAdmxzCjaxQi8klUi"
+
+
+# 配置上传图片
+MEDIA_URL = "/static/media/"
+# 配置该URL对应的物理目录存储地址
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')

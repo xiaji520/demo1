@@ -16,10 +16,11 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link href="{% static 'css/amazeui.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
-    <link href="{% static 'css/check.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/check.css' %}" rel="stylesheet" type="text/css"/>
     <script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
     <script src="{% static 'js/time.js' %}"></script>
     <script src="{% static 'js/popup.mini.js' %}"></script>
+    <script src="{% static 'js/amazeui.min.js' %}"></script>
 
     {% block head_css %}
         {#      写css      #}
@@ -31,27 +32,27 @@
 
 </head>
 <body>
-    {% block header %}
-        <header data-am-widget="header" class="am-header am-header-default sq-head ">
-            <div class="am-header-left am-header-nav">
-                <a href="javascript:history.back()" class="">
-                    <i class="am-icon-chevron-left"></i>
-                </a>
-            </div>
-            <h1 class="am-header-title">
-                <a href="" class="">登录</a>
-            </h1>
-        </header>
-        <div style="height: 49px;"></div>
-        <!--<div class="login-logo">
-            <img src="images/logo.png" />
-	    </div>-->
-        <div style="height: 3rem;"></div>
-    {% endblock %}
+{% block header %}
+    <header data-am-widget="header" class="am-header am-header-default sq-head ">
+        <div class="am-header-left am-header-nav">
+            <a href="javascript:history.back()" class="">
+                <i class="am-icon-chevron-left"></i>
+            </a>
+        </div>
+        <h1 class="am-header-title">
+            <a href="" class="">登录</a>
+        </h1>
+    </header>
+    <div style="height: 49px;"></div>
+    <!--<div class="login-logo">
+        <img src="images/logo.png" />
+    </div>-->
+    <div style="height: 3rem;"></div>
+{% endblock %}
 
 
-    {% block content %}
-        <form class="form" method="post" action="">
+{% block content %}
+    <form class="form" method="post" action="">
         {% csrf_token %}
         <input type="text" name="mobile" id="mobile" placeholder="请输入用户名/手机号" class="login-name">
         <p class="am-text-danger">{{ errors.mobile.0 }}</p>
@@ -69,15 +70,19 @@
             <li><a href=""><img src="{% static 'images/qqlogin.png' %}"/></a></li>
             <li><a href=""><img src="{% static 'images/sinalog.png' %}"/></a></li>
         </ul>
-        </form>
-    {% endblock %}
+    </form>
+{% endblock %}
 
-    {% block footer %}
+{% block footer %}
 
-    {% endblock %}
+{% endblock %}
+<script type='text/javascript'>
+    (function () {
+        new PopUp_api({el: '.index-qd', html: '.qd-box'});
+    })()
+</script>
+{% block footer_js %}
 
-    {% block footer_js %}
-
-    {% endblock %}
+{% endblock %}
 </body>
 </html>

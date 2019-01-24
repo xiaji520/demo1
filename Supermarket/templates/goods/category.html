@@ -41,44 +41,48 @@
         <li><a href="">新品</a></li>
     </ul>
     <div class="content-list">
-        <div class="list-left">
-            {% for cate in category %}
-                <li class="current"><a href="">{{ cate.cate_name }}</a></li>
+    <div class="list-left">
+        {% for cate in category %}
+            <li {% if cate_id == cate.pk %}class="current"{% endif %}>
+                <a href="{% url 'goods:商品列表' cate.pk %}">{{ cate.cate_name }}</a>
+            </li>
+        {% endfor %}
+
+
+    </div>
+    <div class="list-right">
+        <ul class="list-pro">
+
+            {% for goods_sku in goods_sku %}
+
+                <li>
+                    <a href="{% url 'goods:商品详情' goods_sku.pk %}"><img src="{{ MEDIA_URL }}{{ goods_sku.logo }}"
+                                                                       class="list-pic"/></a>
+                    <div class="shop-list-mid" style="width: 65%;">
+                        <div class="tit"><a
+                                href="{% url 'goods:商品详情' goods_sku.pk %}">{{ goods_sku.goods_spu.spu_name }}}&emsp;{{ goods_sku.sku_name }}</a>
+                        </div>
+                        <div class="am-gallery-desc">￥{{ goods_sku.price }}</div>
+                        <p>销量：{{ goods_sku.sale_num }}件</p>
+                    </div>
+                    <div class="list-cart">
+                        <div class="d-stock ">
+                            <a class="decrease">-</a>
+                            <input id="num" readonly="" class="text_box" name="" type="text" value="0">
+                            <a class="increase">+</a>
+                        </div>
+                    </div>
+                </li>
+                {% empty %}
+                    <li>
+                            <a href="{% url 'goods:商品列表' '' %}">暂无该分类下商品~~</a>
+                    </li>
             {% endfor %}
 
 
-        </div>
-        <div class="list-right">
-            <ul class="list-pro">
-
-                {% for goods_sku in goods_sku %}
-
-
-
-                    <li>
-                        <a href="{% url 'goods:商品详情' goods_sku.pk %}"><img src="{{ MEDIA_URL }}{{ goods_sku.logo }}"
-                                                                           class="list-pic"/></a>
-                        <div class="shop-list-mid" style="width: 65%;">
-                            <div class="tit"><a
-                                    href="{% url 'goods:商品详情' goods_sku.pk %}">{{ goods_sku.goods_spu.spu_name }}}&emsp;{{ goods_sku.sku_name }}</a>
-                            </div>
-                            <div class="am-gallery-desc">￥{{ goods_sku.price }}</div>
-                            <p>销量：{{ goods_sku.sale_num }}件</p>
-                        </div>
-                        <div class="list-cart">
-                            <div class="d-stock ">
-                                <a class="decrease">-</a>
-                                <input id="num" readonly="" class="text_box" name="" type="text" value="0">
-                                <a class="increase">+</a>
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
-
-
-            </ul>
-        </div>
-
+        </ul>
+    </div>
+</div>
 {% endblock %}
 
 {% block footer %}

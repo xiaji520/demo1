@@ -15,6 +15,12 @@
             white-space: normal;
             text-overflow: ellipsis;
         }
+
+        .list-price {
+            background: url({% if order == 2 %}{% static 'images/order-bot.png' %}{% elif order == 3 %}{% static 'images/order-top.png' %}{% else %}{% static 'images/order.png' %}{% endif %}) no-repeat right center;
+            padding-right: 20px;
+            font-style: normal;
+        }
     </style>
 {% endblock %}
 
@@ -35,54 +41,55 @@
 {% block content %}
     <div style="height: 49px;"></div>
     <ul class="list-nav">
-        <li class="current"><a href="">综合</a></li>
-        <li><a href="">销量</a></li>
-        <li><a href=""><i class="list-price">价格</i></a></li>
-        <li><a href="">新品</a></li>
+        <li {% if order == 0 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 0 %}">综合</a></li>
+        <li {% if order == 1 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 1 %}">销量</a></li>
+        <li {% if order == 2 or order == 3 %}class="current"{% endif %}><a id="price" href="{% url 'goods:商品列表' cate_id 2 %}"><i
+                class="list-price">价格</i></a></li>
+        <li {% if order == 4 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 4 %}">新品</a></li>
     </ul>
     <div class="content-list">
-    <div class="list-left">
-        {% for cate in category %}
-            <li {% if cate_id == cate.pk %}class="current"{% endif %}>
-                <a href="{% url 'goods:商品列表' cate.pk %}">{{ cate.cate_name }}</a>
-            </li>
-        {% endfor %}
-
-
-    </div>
-    <div class="list-right">
-        <ul class="list-pro">
-
-            {% for goods_sku in goods_sku %}
-
-                <li>
-                    <a href="{% url 'goods:商品详情' goods_sku.pk %}"><img src="{{ MEDIA_URL }}{{ goods_sku.logo }}"
-                                                                       class="list-pic"/></a>
-                    <div class="shop-list-mid" style="width: 65%;">
-                        <div class="tit"><a
-                                href="{% url 'goods:商品详情' goods_sku.pk %}">{{ goods_sku.goods_spu.spu_name }}}&emsp;{{ goods_sku.sku_name }}</a>
-                        </div>
-                        <div class="am-gallery-desc">￥{{ goods_sku.price }}</div>
-                        <p>销量：{{ goods_sku.sale_num }}件</p>
-                    </div>
-                    <div class="list-cart">
-                        <div class="d-stock ">
-                            <a class="decrease">-</a>
-                            <input id="num" readonly="" class="text_box" name="" type="text" value="0">
-                            <a class="increase">+</a>
-                        </div>
-                    </div>
+        <div class="list-left">
+            {% for cate in category %}
+                <li {% if cate_id == cate.pk %}class="current"{% endif %}>
+                    <a href="{% url 'goods:商品列表' cate.pk order %}">{{ cate.cate_name }}</a>
                 </li>
-                {% empty %}
-                    <li>
-                            <a href="{% url 'goods:商品列表' '' %}">暂无该分类下商品~~</a>
-                    </li>
             {% endfor %}
 
 
-        </ul>
+        </div>
+        <div class="list-right">
+            <ul class="list-pro">
+
+                {% for goods_sku in goods_sku %}
+
+                    <li>
+                        <a href="{% url 'goods:商品详情' goods_sku.pk %}"><img src="{{ MEDIA_URL }}{{ goods_sku.logo }}"
+                                                                           class="list-pic"/></a>
+                        <div class="shop-list-mid" style="width: 65%;">
+                            <div class="tit"><a
+                                    href="{% url 'goods:商品详情' goods_sku.pk %}">{{ goods_sku.goods_spu.spu_name }}}&emsp;{{ goods_sku.sku_name }}</a>
+                            </div>
+                            <div class="am-gallery-desc">￥{{ goods_sku.price }}</div>
+                            <p>销量：{{ goods_sku.sale_num }}件</p>
+                        </div>
+                        <div class="list-cart">
+                            <div class="d-stock ">
+                                <a class="decrease">-</a>
+                                <input id="num" readonly="" class="text_box" name="" type="text" value="0">
+                                <a class="increase">+</a>
+                            </div>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>
+                        <a href="{% url 'goods:商品列表' '' '' %}">暂无该分类下商品~~</a>
+                    </li>
+                {% endfor %}
+
+
+            </ul>
+        </div>
     </div>
-</div>
 {% endblock %}
 
 {% block footer %}
@@ -130,6 +137,13 @@
                 }
             })
         })
-
+        $(function () {
+            // 修改 标签上的地址值
+            {% if order == 2 %}
+                $("#price").attr('href', '{% url "goods:商品列表" cate_id 3 %}');
+            {% elif order == 3 %}
+                $("#price").attr('href', '{% url "goods:商品列表" cate_id 2 %}');
+            {% endif %}
+        })
     </script>
 {% endblock %}

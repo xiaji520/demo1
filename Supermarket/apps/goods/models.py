@@ -1,3 +1,4 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from db.base_model import BaseModel
 
@@ -57,7 +58,7 @@ class GoodsSPU(BaseModel):
     spu_name = models.CharField(verbose_name='商品SPU名称',
                                 max_length=20
                                 )
-    content = models.TextField(verbose_name="商品详情")
+    content = RichTextUploadingField(verbose_name="商品详情")
 
     def __str__(self):
         return self.spu_name
@@ -145,6 +146,7 @@ class Gallery(BaseModel):
     def __str__(self):
         return "商品相册:{}".format(self.img_url.name)
 
+
 # 模型六：
 # 首页轮播
 # ID
@@ -172,6 +174,7 @@ class Banner(BaseModel):
     def __str__(self):
         return self.name
 
+
 # 模型七：
 # 首页活动
 # ID
@@ -191,6 +194,7 @@ class Activity(BaseModel):
     class Meta:
         verbose_name = "活动管理"
         verbose_name_plural = verbose_name
+
 
 # 模型八：
 # 首页活动专区

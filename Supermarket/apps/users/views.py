@@ -186,11 +186,11 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
         # 操作数据
         user = Users.objects.get(pk=user_id)
         user.nickname = data.get('nickname')
-        user.sex=data.get('sex')
-        user.birthday=data.get('birthday')
-        user.school=data.get('school')
-        user.location=data.get('location')
-        user.hometown=data.get('hometown')
+        user.sex = data.get('sex')
+        user.birthday = data.get('birthday')
+        user.school = data.get('school')
+        user.location = data.get('location')
+        user.hometown = data.get('hometown')
         if head is not None:
             user.head = head
         user.save()
@@ -199,6 +199,7 @@ class InforView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使登�
         login(request, user)
         # 合成响应
         return redirect('users:个人中心')
+
 
 class ForgetView(View):  # 继承了VerifyLoginView,替换View,使登录session才能看到
     """忘记密码"""

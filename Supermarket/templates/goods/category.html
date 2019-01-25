@@ -31,10 +31,12 @@
                 <i class="am-icon-chevron-left"></i>
             </a>
         </div>
-        <div class="cate-search">
-            <input type="text" class="cate-input" placeholder="请输入您要的搜索的产品关键词"/>
-            <input type="button" class="cate-btn"/>
-        </div>
+        <form action="{% url 'search:haystack_search' %}" method="get">
+            <div class="cate-search">
+                <input type="text" name="q" class="cate-input" placeholder="请输入您要的搜索的产品关键词"/>
+                <input type="submit" value="" class="cate-btn"/>
+            </div>
+        </form>
     </header>
 {% endblock %}
 
@@ -43,7 +45,8 @@
     <ul class="list-nav">
         <li {% if order == 0 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 0 %}">综合</a></li>
         <li {% if order == 1 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 1 %}">销量</a></li>
-        <li {% if order == 2 or order == 3 %}class="current"{% endif %}><a id="price" href="{% url 'goods:商品列表' cate_id 2 %}"><i
+        <li {% if order == 2 or order == 3 %}class="current"{% endif %}><a id="price"
+                                                                           href="{% url 'goods:商品列表' cate_id 2 %}"><i
                 class="list-price">价格</i></a></li>
         <li {% if order == 4 %}class="current"{% endif %}><a href="{% url 'goods:商品列表' cate_id 4 %}">新品</a></li>
     </ul>
@@ -70,7 +73,7 @@
                                     href="{% url 'goods:商品详情' goods_sku.pk %}">{{ goods_sku.goods_spu.spu_name }}}&emsp;{{ goods_sku.sku_name }}</a>
                             </div>
                             <div class="am-gallery-desc">￥{{ goods_sku.price }}</div>
-                            <p>销量：{{ goods_sku.sale_num }}件</p>
+                            <p>销量：{{ goods_sku.sale_num }}{{ goods_sku.unit }}</p>
                         </div>
                         <div class="list-cart">
                             <div class="d-stock ">

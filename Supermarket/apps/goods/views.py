@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views import View
 
 from goods.models import GoodsSPU, Banner, GoodsSKU, Category
+from shopping.hepler import get_shopcart_count
 
 
 class IndexView(View):
@@ -93,12 +94,15 @@ class CategoryView(View):
         if count < order:
             order=1
             goods_sku = goods_sku.order_by(order_rule[order])
+        # 获取 当前用户购物车商品总数
+        cart_count = get_shopcart_count(request)
 
         context = {
             'category': categorys,
             'goods_sku': goods_sku,
             'cate_id': cate_id,
             'order': order,
+            'cart_count':cart_count,
         }
         return render(request, 'goods/category.html', context=context)
 

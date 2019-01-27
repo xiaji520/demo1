@@ -78,7 +78,7 @@
                         <div class="list-cart">
                             <div class="d-stock ">
                                 <a class="decrease">-</a>
-                                <input id="num" readonly="" class="text_box" name="" type="text" value="0">
+                                <input  sku_id="{{ goods_sku.pk }}" id="num" readonly="" class="text_box" name="" type="text" value="0">
                                 <a class="increase">+</a>
                             </div>
                         </div>
@@ -99,9 +99,9 @@
     <!--底部-->
     <div style="height: 55px;"></div>
     <div class="fix-bot">
-        <div class="fix-bot-cart"><i>8</i></div>
-        <a href="tureorder.html" class="list-js">去结算</a>
-        <a href="tureorder.html" class="list-jsk">一键快购</a>
+        <div class="fix-bot-cart"><i id="cart_count">{{ cart_count }}</i></div>
+        <a href="{% url 'shopping:订单页' %}" class="list-js">去结算</a>
+        <a href="{% url 'shopping:订单页' %}" class="list-jsk">一键快购</a>
         <!--<div class="js-text">
            <p><b>￥217.80</b></p>
            <p class="js-car">购物满50元免运费</p>
@@ -110,21 +110,58 @@
 {% endblock %}
 
 {% block footer_js %}
-
-
     <script>
         //购物数量加减
         $(function () {
             $('.increase').click(function () {
                 var self = $(this);
                 var current_num = parseInt(self.siblings('input').val());
-                current_num += 1;
-                if (current_num > 0) {
-                    self.siblings(".decrease").fadeIn();
-                    self.siblings(".text_box").fadeIn();
-                }
-                self.siblings('input').val(current_num);
-                update_item(self.siblings('input').data('item-id'));
+
+
+                //完成ajax请求
+                // 准备数据
+                //sku_id 在input 上添加一个自定义属性 sku_id=1
+                //找到input获取自定义的属性值
+                var sku_id = self.siblings('input').attr('sku_id');
+                var data = {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'count': 1,
+                    'sku_id': sku_id
+                };
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'shopping:添加购物车' %}",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code == 0) {
+
+                            //添加成功
+                            current_num += 1;
+                            if (current_num > 0) {
+                                self.siblings(".decrease").fadeIn();
+                                self.siblings(".text_box").fadeIn();
+                            }
+                            self.siblings('input').val(current_num);
+
+                            //修改总数
+                            $("#cart_count").text(data.data);
+                        } else if (data.code == 1) {
+
+                            //未登录陆,跳转到登录页面
+                            if (confirm("没有登录,是否立即登录?")) {
+                                location.href = "{% url 'users:登录' %}"
+                            }
+
+                        } else {
+                            alert(data.errmsg);
+                        }
+                    }
+                });
+
+
+
+            //购物数量加减
             })
             $('.decrease').click(function () {
                 var self = $(this);
@@ -136,10 +173,11 @@
                         self.siblings(".text_box").fadeOut();
                     }
                     self.siblings('input').val(current_num);
-                    update_item(self.siblings('input').data('item-id'));
                 }
             })
         })
+
+
         $(function () {
             // 修改 标签上的地址值
             {% if order == 2 %}

@@ -1,4 +1,6 @@
 import hashlib
+
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from Supermarket.settings import SECRET_KEY, ACCESS_KEY_ID, ACCESS_KEY_SECRET
 from aliyunsdkdysmsapi.request.v20170525 import SendSmsRequest
@@ -7,6 +9,9 @@ from aliyunsdkcore.profile import region_provider
 
 
 # 密码加盐
+from shopping.hepler import json_msg
+
+
 def set_password(password):
     for _ in range(2000):
         # 循环加密 + 加盐
@@ -32,8 +37,18 @@ def check_login(func):
     def verify_login(request, *args, **kwargs):
         # 验证session中是否有登录标识
         if request.session.get("ID") is None:
-            # 跳转到登录
-            return redirect('users:登录')
+
+            # 将referer保存到session
+            referer = request.META.get('HTTP_REFERER',None)
+            if referer:
+                request.session['referer'] = referer
+
+            # 判断是不是json数据
+            if request.is_ajax():
+                return JsonResponse(json_msg(1, '未登录'))
+            else:
+                # 跳转到登录
+                return redirect('users:登录')
         else:
             # 调用原函数
             return func(request, *args, **kwargs)

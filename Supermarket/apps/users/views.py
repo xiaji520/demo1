@@ -139,8 +139,15 @@ class LoginView(View):
             # 从数据库查询
             try:
                 Users.objects.get(mobile=mobile, password=password)
-                # 跳转到登录页
-                return redirect('users:个人中心')
+                referer = request.session.get('referer')
+                if referer:
+                    # 跳转回去
+                    # 删除session
+                    del request.session['referer']
+                    return redirect(referer)
+                else:
+                    # 跳转到登录页
+                    return redirect('users:个人中心')
             except:
                 return render(request, "users/login.html")
         else:  # 不合法

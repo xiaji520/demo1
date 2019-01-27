@@ -32,7 +32,7 @@
     <div class="am-slider am-slider-default" data-am-flexslider id="demo-slider-0">
         <ul class="am-slides">
             {% for ban in banner %}
-                <li><img src="{{ MEDIA_URL }}{{ ban.img_url }}"/></li>
+                <li><a href="{% url 'goods:商品详情'  ban.goods_sku.pk %}"><img src="{{ MEDIA_URL }}{{ ban.img_url }}"/></a><p>&emsp;&emsp;{{ ban.name }}</p></li>
             {% endfor %}
         </ul>
     </div>

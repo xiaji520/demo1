@@ -22,8 +22,10 @@ def get_shopcart_count(request):
         cart_key = f"shopcart_{user_id}"
         # 获取
         values = r.hvals(cart_key)
+        # print(values)
         # 准备一个总数量
         total_count = 0
         for v in values:
             total_count += int(v)
+            # print(total_count)
         return total_count

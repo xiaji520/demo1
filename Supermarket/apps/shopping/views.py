@@ -78,7 +78,7 @@ class AddShopcartView(VerifyLoginView):
         # 获取购物车中的总数量
         cart_count = get_shopcart_count(request)
 
-        return JsonResponse(json_msg(0, '添加购物车成功!',data=cart_count))
+        return JsonResponse(json_msg(0, '添加购物车成功!', data=cart_count))
 
 
 class ShopcartListView(VerifyLoginView):
@@ -87,7 +87,40 @@ class ShopcartListView(VerifyLoginView):
     '''
 
     def get(self, request):
-        return render(request, 'shopping/shopcart.html')
+        # 查询所有的商品
+        goods_sku = GoodsSKU.objects.filter(is_delete=False)
+        # 利用redis获取数量
+        # redis
+        r = get_redis_connection()
+        # 准备键
+        user_id = request.session.get("ID")
+        cart_key = f"shopcart_{user_id}"
+        # 获取
+        values = r.hgetall(cart_key)
+        # print(values)  # {b'1': b'22', b'4': b'31', b'2': b'4', b'3': b'1'}
+        # 字典推导式获取商品总价格
+        goods = {GoodsSKU.objects.get(pk=int(pk)): int(counts) for pk, counts in values.items()}
+        # print(goods)
+        # 获取各个商品总价,返回列表
+        price_list = [sku.price * count for sku, count in goods.items()]
+        # print(price_list)
+        price = 0
+        for p in price_list:
+            price += p
+            # print(price)
+
+        one = {int(a): int(b) for a, b in values.items()}
+        print(one)
+        for o in one:
+            o =one[o]
+            print(o)
+
+        context = {
+            'goods_sku': goods_sku,
+            'price': price,
+            # 'o': o,
+        }
+        return render(request, 'shopping/shopcart.html', context=context)
 
     def post(self, request):
         pass
@@ -111,7 +144,32 @@ class TureorderView(VerifyLoginView):
     '''
 
     def get(self, request):
-        return render(request, 'shopping/tureorder.html')
+        # 查询所有的商品
+        goods_sku = GoodsSKU.objects.filter(is_delete=False)
+        # 利用redis获取数量
+        # redis
+        r = get_redis_connection()
+        # 准备键
+        user_id = request.session.get("ID")
+        cart_key = f"shopcart_{user_id}"
+        # 获取
+        values = r.hgetall(cart_key)
+        # print(values)  # {b'1': b'22', b'4': b'31', b'2': b'4', b'3': b'1'}
+        # 字典推导式获取商品总价格
+        goods = {GoodsSKU.objects.get(pk=int(pk)): int(counts) for pk, counts in values.items()}
+        # print(goods)
+        # 获取各个商品总价,返回列表
+        price_list = [sku.price * count for sku, count in goods.items()]
+        # print(price_list)
+        price = 0
+        for p in price_list:
+            price += p
+            # print(price)
+        context = {
+            'goods_sku': goods_sku,
+            'price': price,
+        }
+        return render(request, 'shopping/tureorder.html',context=context)
 
     def post(self, request):
         pass

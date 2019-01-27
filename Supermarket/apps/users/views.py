@@ -273,3 +273,13 @@ class PasswordView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使�
         else:
             # 错误
             return render(request, 'users/password.html', context={'errors': form.errors, })
+
+
+class AddressView(VerifyLoginView):
+    """收货地址"""
+
+    def get(self, request):
+        return render(request, 'users/address.html')
+
+    def post(self, request):
+        pass

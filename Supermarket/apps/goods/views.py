@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
+from django_redis import get_redis_connection
 
 from goods.models import GoodsSPU, Banner, GoodsSKU, Category
 from shopping.hepler import get_shopcart_count
@@ -62,7 +63,7 @@ class CategoryView(View):
             order_rule = ['pk', '-sale_num', 'price', '-price', '-create_time']
     """
 
-    def get(self, request, cate_id,order):
+    def get(self, request, cate_id, order):
         # 查询所有的分类
         categorys = Category.objects.filter(is_delete=False).order_by("-order")
         # 取出第一个分类
@@ -88,11 +89,11 @@ class CategoryView(View):
         # 排序规则列表
         order_rule = ['pk', '-sale_num', 'price', '-price', '-create_time']
         # 判断参数是否超出范围,超出范围返回综合排序
-        count=0
+        count = 0
         for _ in order_rule:
-            count+=1
+            count += 1
         if count < order:
-            order=1
+            order = 1
             goods_sku = goods_sku.order_by(order_rule[order])
         # 获取 当前用户购物车商品总数
         cart_count = get_shopcart_count(request)
@@ -102,9 +103,9 @@ class CategoryView(View):
             'goods_sku': goods_sku,
             'cate_id': cate_id,
             'order': order,
-            'cart_count':cart_count,
+            'cart_count': cart_count,
         }
         return render(request, 'goods/category.html', context=context)
 
-    def post(self, request, cate_id,order):
+    def post(self, request, cate_id, order):
         pass

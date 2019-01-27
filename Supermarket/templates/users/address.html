@@ -1,0 +1,39 @@
+{% extends 'common/parent.html' %}
+{% load static %}
+{% block title %}收货地址{% endblock %}
+
+{% block header %}
+		<header data-am-widget="header" class="am-header am-header-default sq-head ">
+			<div class="am-header-left am-header-nav">
+				<a href="javascript:history.back()" class="">
+					<i class="am-icon-chevron-left"></i>
+				</a>
+			</div>
+			<h1 class="am-header-title">
+  	            <a href="" class="">新增收货地址</a>
+            </h1>
+	    </header>
+{% endblock %}
+{% block content %}
+	    <div style="height: 60px;"></div>
+	    <ul class="address">
+	    	<li>
+	    		<a href="village.html"><input type="text" class="add-input"  disabled="disabled" placeholder="宿舍区" />
+	    		<i class="am-icon-angle-right" style="float: right; margin-top: 5px;"></i></a>
+	    	</li>
+	    	<li>
+	    		<a href="village.html"><input type="text" class="add-input"  disabled="disabled" placeholder="哪栋楼" />
+	    		<i class="am-icon-angle-right" style="float: right; margin-top: 5px;"></i></a>
+	    	</li>
+	    	<li><input type="text" class="add-input" placeholder="你在哪" /></li>
+	    	<li><input type="text" class="add-input" placeholder="收货人" /></li>
+	    	<li><input type="text" class="add-input" placeholder="13000000000" /></li>
+	    </ul>
+	    <div class="moren">
+	    	<label class="am-checkbox am-warning">
+                 <input type="checkbox" checked="checked" value="" data-am-ucheck checked>设为默认
+            </label>
+            
+	    </div>
+	    <input type="button" class="login-btn" value="确认提交">
+{% endblock %}

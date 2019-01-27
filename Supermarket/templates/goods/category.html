@@ -78,7 +78,8 @@
                         <div class="list-cart">
                             <div class="d-stock ">
                                 <a class="decrease">-</a>
-                                <input  sku_id="{{ goods_sku.pk }}" id="num" readonly="" class="text_box" name="" type="text" value="0">
+                                <input sku_id="{{ goods_sku.pk }}" id="num" readonly="" class="text_box" name=""
+                                       type="text" value="0">
                                 <a class="increase">+</a>
                             </div>
                         </div>
@@ -158,24 +159,56 @@
                         }
                     }
                 });
+            });
 
 
-
-            //购物数量加减
-            })
             $('.decrease').click(function () {
                 var self = $(this);
                 var current_num = parseInt(self.siblings('input').val());
-                if (current_num > 0) {
-                    current_num -= 1;
-                    if (current_num < 1) {
-                        self.fadeOut();
-                        self.siblings(".text_box").fadeOut();
+
+
+                //完成ajax请求
+                // 准备数据
+                //sku_id 在input 上添加一个自定义属性 sku_id=1
+                //找到input获取自定义的属性值
+                var sku_id = self.siblings('input').attr('sku_id');
+                var data = {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'count': -1,
+                    'sku_id': sku_id
+                };
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'shopping:添加购物车' %}",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code == 0) {
+
+                            //添加成功
+                            current_num -= 1;
+                            if (current_num < 1) {
+                                self.fadeOut();
+                                self.siblings(".text_box").fadeOut();
+                            }
+                            self.siblings('input').val(current_num);
+
+                            //修改总数
+                            $("#cart_count").text(data.data);
+                        } else if (data.code == 1) {
+
+                            //未登录陆,跳转到登录页面
+                            if (confirm("没有登录,是否立即登录?")) {
+                                location.href = "{% url 'users:登录' %}"
+                            }
+
+                        } else {
+                            alert(data.errmsg);
+                        }
                     }
-                    self.siblings('input').val(current_num);
-                }
-            })
-        })
+                });
+            });
+        });
 
 
         $(function () {
@@ -185,6 +218,6 @@
             {% elif order == 3 %}
                 $("#price").attr('href', '{% url "goods:商品列表" cate_id 2 %}');
             {% endif %}
-        })
+        });
     </script>
 {% endblock %}

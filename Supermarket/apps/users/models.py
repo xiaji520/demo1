@@ -61,3 +61,63 @@ class Users(BaseModel):  # BaseModel
         db_table = "users"  # 表名
         verbose_name = '用户管理'
         verbose_name_plural = verbose_name
+
+
+class UserAddress(BaseModel):
+    """用户收货地址管理"""
+    user = models.ForeignKey(to="Users", verbose_name="创建人")
+    username = models.CharField(verbose_name="收货人", max_length=100)
+    phone = models.CharField(verbose_name="收货人电话",
+                             max_length=11,
+                             validators=[
+                                 RegexValidator('^1[3-9]\d{9}$', '电话号码格式错误!')
+                             ])
+    hcity = models.CharField(verbose_name="省", max_length=100)
+    hproper = models.CharField(verbose_name="市", max_length=100, blank=True, default='')
+    harea = models.CharField(verbose_name="区", max_length=100, blank=True, default='')
+    brief = models.CharField(verbose_name="详细地址", max_length=255)
+    isDefault = models.BooleanField(verbose_name="是否设置为默认", default=False, blank=True)
+
+    class Meta:
+        verbose_name = "收货地址管理"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.username
+
+
+class Payment(BaseModel):
+    """
+        支付方式
+    """
+    pay_name = models.CharField(verbose_name='支付方式',
+                                max_length=20
+                                )
+
+    class Meta:
+        verbose_name = "支付方式"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.pay_name
+
+
+class Transport(BaseModel):
+    """
+        配送方式
+    """
+    name = models.CharField(verbose_name='配送方式',
+                            max_length=20
+                            )
+    money = models.DecimalField(verbose_name='金额',
+                                max_digits=9,
+                                decimal_places=2,
+                                default=0
+                                )
+
+    class Meta:
+        verbose_name = "配送方式"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name

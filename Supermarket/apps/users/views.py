@@ -8,8 +8,8 @@ from django.views import View
 from django_redis import get_redis_connection
 from Supermarket.settings import SECRET_KEY
 from db.base_view import VerifyLoginView
-from users.forms import RegisterForm, LoginForm, InforForm, ForgetForm, PasswordForm
-from users.models import Users
+from users.forms import RegisterForm, LoginForm, InforForm, ForgetForm, PasswordForm, AddressAddForm
+from users.models import Users, UserAddress
 from users.helper import set_password, login, send_sms
 
 
@@ -276,10 +276,55 @@ class PasswordView(VerifyLoginView):  # 继承了VerifyLoginView,替换View,使�
 
 
 class AddressView(VerifyLoginView):
-    """收货地址"""
+    """添加收货地址"""
 
     def get(self, request):
         return render(request, 'users/address.html')
 
     def post(self, request):
+        # 接收参数
+        data = request.POST.dict()  # 强制转换成字典
+
+        # 字典保存用户
+        data['user_id'] = request.session.get("ID")  # form自动转换功能
+
+        # 验证参数
+        form = AddressAddForm(data)
+        if form.is_valid():
+            form.instance.user = Users.objects.get(pk=data['user_id'])
+            form.save()
+            return redirect("users:管理收货地址")
+        else:
+            context = {
+                'errors': form.errors,
+            }
+            return render(request, "users/address.html", context=context)
+
+
+class GladdressView(VerifyLoginView):
+    """管理地址列表"""
+
+    def get(self, request):
+        # 显示账号信息
+        # 通过id查询数据
+        user_id = request.session.get('ID')
+        # print(user_id)
+        address = UserAddress.objects.filter(user_id=user_id,is_delete=False).order_by('-isDefault')
+
+        context = {
+            'address': address
+        }
+
+        return render(request, 'users/gladdress.html', context=context)
+
+    def post(self, request):
         pass
+
+# class VillageView(VerifyLoginView):
+#     """校区选择"""
+#
+#     def get(self, request):
+#         return render(request, 'users/village.html')
+#
+#     def post(self, request):
+#         pass

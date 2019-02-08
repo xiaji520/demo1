@@ -29,3 +29,8 @@ def get_shopcart_count(request):
             total_count += int(v)
             # print(total_count)
         return total_count
+
+
+def get_cart_key(user_id):
+    """生成购物车key"""
+    return f"shopcart_{user_id}"

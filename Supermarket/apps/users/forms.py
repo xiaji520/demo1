@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django_redis import get_redis_connection
 
 from users.helper import set_password
-from users.models import Users
+from users.models import Users, UserAddress
 
 
 # 注册
@@ -125,19 +125,19 @@ class ForgetForm(forms.Form):
                              validators=[RegexValidator(r'^1[3-9]\d{9}$', message="手机号码格式错误!")]
                              )
     password2 = forms.CharField(max_length=20,
-                               min_length=6,
-                               error_messages={
-                                   'required': '请填写密码!',
-                                   'min_length': '请输入至少六个字符!',
-                                   'max_length': '请输入小于或等于二十个字符!'
-                               })
+                                min_length=6,
+                                error_messages={
+                                    'required': '请填写密码!',
+                                    'min_length': '请输入至少六个字符!',
+                                    'max_length': '请输入小于或等于二十个字符!'
+                                })
     repassword2 = forms.CharField(max_length=20,
-                                 min_length=6,
-                                 error_messages={
-                                     'required': '这是必填选项!',
-                                     'min_length': '请输入至少六个字符!',
-                                     'max_length': '请输入小于或等于二十个字符!'
-                                 })
+                                  min_length=6,
+                                  error_messages={
+                                      'required': '这是必填选项!',
+                                      'min_length': '请输入至少六个字符!',
+                                      'max_length': '请输入小于或等于二十个字符!'
+                                  })
     # 验证码
     captcha = forms.CharField(max_length=6,
                               error_messages={
@@ -193,3 +193,36 @@ class PasswordForm(forms.Form):
             raise forms.ValidationError({"repassword2": "两次密码不一致,请重新输入!"})
         # 返回,返回整个清洗后的数据
         return self.cleaned_data
+
+
+# 用户添加收货地址的表单
+class AddressAddForm(forms.ModelForm):
+    class Meta:
+        model = UserAddress
+        exclude = ['create_time', 'update_time', 'is_delete', 'user']
+        error_messages = {
+            'username': {
+                'required': "请填写用户名！",
+            },
+            'phone': {
+                'required': "请填写手机号码！",
+            },
+            'brief': {
+                'required': "请填写详细地址！",
+            },
+            'hcity': {
+                'required': "请填写完整地址！",
+            },
+        }
+
+    def clean(self):
+        # 验证如果数据库里地址已经超过6六表报错
+        cleaned_data = self.cleaned_data
+        count = UserAddress.objects.filter(user_id=self.data.get("user_id")).count()
+        if count >= 6:
+            raise forms.ValidationError({"hcity": "收货地址最多只能保存6条"})
+
+        # 默认地址操作
+        if cleaned_data.get('isDefault'):
+            UserAddress.objects.filter(user_id=self.data.get("user_id")).update(isDefault=False)
+        return cleaned_data

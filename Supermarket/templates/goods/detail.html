@@ -60,7 +60,7 @@
         <div class="d-stock">
             <a class="decrease">-</a>
             <input id="num" readonly="" class="text_box" name="" type="text" value="1">
-            <input id="id" type="hidden" value="644">
+            <input id="count" type="hidden" value="1">
             <a class="increase">+</a>
             <span id="dprice" class="price" style="display:none"> 36</span>
         </div>
@@ -77,21 +77,6 @@
                 {{ goods_sku.goods_spu.content|safe }}
             </div>
             <div class="am-tab-panel am-fade detail " id="tab2">
-                <!--<div class="comment">
-                    <span>好评：</span>
-                    <div class="com-good"></div>
-                    <span>100%</span>
-                </div>
-                <div class="comment">
-                    <span>中评：</span>
-                    <div class="com-bad"></div>
-                    <span>0%</span>
-                </div>
-                <div class="comment">
-                    <span>差评：</span>
-                    <div class="com-bad"></div>
-                    <span>0%</span>
-                </div>-->
                 <ul class="comment-list">
                     <li class="current"><a href="">全部</a></li>
                     <li><a href="">好评（20）</a></li>
@@ -129,7 +114,7 @@
     <div style=" height: 55px;"></div>
     <ul class="fix-shopping">
         <li><a id="cart" class="join">加入购物车</a></li>
-        <li><a href="{% url 'shopping:确认订单' %}" class="imm-buy">立即购买</a></li>
+        <li><a href="{% url 'shopping:购物车' %}" class="imm-buy">立即购买</a></li>
     </ul>
 {% endblock %}
 {% block footer_js %}
@@ -157,7 +142,7 @@
             $('#cart').click(function () {
                 var sku_id =
                 {{goods_sku.pk}}
-                var count = $('#num').val();
+                var count = $('#count').val();
                 var data = {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     'count': count,

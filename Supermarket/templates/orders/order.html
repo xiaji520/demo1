@@ -1,77 +1,92 @@
 {% extends 'common/parent.html' %}
 {% load static %}
-{% block title %}确认订单{% endblock %}
- {% block head_js %}
-       <script type="text/javascript">
-			$(function(){
-				$('#beginTime').date();
-				$('#endTime').date({theme:"datetime"});
-			});
-        </script>
- {% endblock %}
+{% block title %}支付页面{% endblock %}
+{% block head_js %}
+    <script type="text/javascript">
+        $(function () {
+            $('#beginTime').date();
+            $('#endTime').date({theme: "datetime"});
+        });
+    </script>
+{% endblock %}
 
 {% block header %}
-		<header data-am-widget="header" class="am-header am-header-default sq-head ">
-			<div class="am-header-left am-header-nav">
-				<a href="javascript:history.back()" class="">
-					<i class="am-icon-chevron-left"></i>
-				</a>
-			</div>
-			<h1 class="am-header-title">
-  	            <a href="" class="">确认订单</a>
-            </h1>
-	    </header>
- {% endblock %}
+    <header data-am-widget="header" class="am-header am-header-default sq-head ">
+        <div class="am-header-left am-header-nav">
+            <a href="javascript:history.back()" class="">
+                <i class="am-icon-chevron-left"></i>
+            </a>
+        </div>
+        <h1 class="am-header-title">
+            <a href="" class="">确认订单</a>
+        </h1>
+    </header>
+{% endblock %}
 
 {% block content %}
-	    <div style="height: 49px;"></div>
-	    <h5 class="order-tit">收货人信息</h5>
-	    <div class="order-name">
-	    	<a href="gladdress.html">
-	    		<p class="order-tele">宋科&nbsp;&nbsp;&nbsp;15180163170</p>
-	    		<p class="order-add">江西省南昌市 青云谱区解放西路258号</p>
-	    	</a>
-	    	<i class="am-icon-angle-right"></i>
-	    </div>
-        <div style="background: #eee; height: 10px;"></div>
-        <h5 class="order-tit">确认订单信息</h5>
-        <ul class="shopcart-list" style="padding-bottom: 0;">
-        {% for goods_sku in goods_sku %}
-	    	<li>
-                <img src="{{ MEDIA_URL }}{{ goods_sku.logo }}" class="shop-pic" />
+     <h5 class="order-tit">收货人信息</h5>
+    <div class="order-name">
+        <p class="order-tele">{{ order.username }}&nbsp;&nbsp;&nbsp;{{ order.phone }}</p>
+        <p class="order-add">{{ order.address }}</p>
+    </div>
+    <div style="background: #eee; height: 10px;"></div>
+    <h5 class="order-tit">确认订单信息</h5>
+    <ul class="shopcart-list" style="padding-bottom: 0; margin-top: 0;">
+        {% for og in order.ordergoods_set.all %}
+            <li>
+                <img src="{{ MEDIA_URL }}{{ og.goods_sku.logo }}" class="shop-pic"/>
                 <div class="order-mid">
-                	<div class="tit">{{goods_sku.goods_spu.spu_name}}&emsp;{{ goods_sku.sku_name }}</div>
-                	<div class="order-price">￥{{goods_sku.price}} <i>X2</i></div>
+                    <div class="tit">{{ og.goods_sku.goods_spu.spu_name }}{{ og.goods_sku.sku_name }}</div>
+                    <div class="order-price">￥{{ og.price }} <i>X{{ og.count }}</i></div>
                 </div>
-	    	</li>
-         {% endfor %}
-	    </ul>
-	    <ul class="order-infor">
-	    	<li class="order-infor-first">
-	    		<span>商品总计：</span>
-	    		<i>￥{{price}}</i>
-	    	</li>
-	    	<li class="order-infor-first">
-	    		<span>运费：</span>
-	    		<i>包邮</i>
-	    	</li>
-	    	<li class="order-infor-first">
-	    		<a href="">积分抵费></a>
-	    	</li>
-	    	<li class="order-infor-first">
-	    		<a href="">选择优惠券></a>
-	    	</li>
-	    </ul>
-	    <div style="background: #eee; height: 10px;"></div>
-	    <textarea placeholder="备注说明" class="bz-infor"></textarea>
-	    <div style="background: #eee; height: 10px;"></div>
-	    <div style="height: 55px;"></div>
-	    <div class="shop-fix">
-	    	<div class="order-text">
-	    		应付总额：<span>￥{{price}}</span>
-	    	</div>
-	    	<a href="pay.html" class="js-btn">提交订单</a>
-	    </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <ul class="order-infor">
+        <li class="order-infor-first">
+            <span>商品总计：</span>
+            <i>￥{{ order.order_amount }}</i>
+        </li>
+        <li class="order-infor-first">
+            <span>运输方式：{{ order.transport }}</span>
+            <i>运费：￥{{ order.transport_price }}</i>
+        </li>
+
+    </ul>
+    <ul class="pay-style">
+        <li>
+            <img src="{% static 'images/zhi.png' %}" width="50"/>
+            <span>
+		   	 		<p>支付宝</p>
+		   	 		<p class="descript">推荐有支付宝账号的用户使用</p>
+		   	 	</span>
+            <label class="am-radio-inline">
+                <input type="radio" checked="checked" name="radio10" value="1" data-am-ucheck>
+            </label>
+        </li>
+        <li>
+            <img src="{% static 'images/wei.png' %}" width="50"/>
+            <span>
+		   	 		<p>微信支付</p>
+		   	 		<p class="descript">推荐安装微信5.0及以上版本的使用</p>
+		   	 	</span>
+            <label class="am-radio-inline">
+                <input type="radio" name="radio10" value="1" data-am-ucheck>
+            </label>
+        </li>
+
+    </ul>
+
+    <div style="background: #eee; height: 10px;"></div>
+    <textarea placeholder="备注说明" class="bz-infor"></textarea>
+    <div style="background: #eee; height: 10px;"></div>
+    <div style="height: 55px;"></div>
+    <div class="shop-fix">
+        <div class="order-text">
+            应付总额：<span>￥{{ total }}</span>
+        </div>
+        <a href="pay.html" class="js-btn">确认支付</a>
+    </div>
     <!--底部-->
     <div style="height: 55px;"></div>
     <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default sq-foot am-no-layout" id="">
@@ -109,4 +124,4 @@
             </li>
         </ul>
     </div>
- {% endblock %}
+{% endblock %}

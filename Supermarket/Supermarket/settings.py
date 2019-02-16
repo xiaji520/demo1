@@ -136,12 +136,12 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/' # 七牛云配置代替
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 # 设置静态文件根目录  上线的时候使用
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # 添加django中的缓存配置
 CACHES = {
@@ -163,7 +163,7 @@ ACCESS_KEY_ID = "LTAI2qSiJdWP87em"
 ACCESS_KEY_SECRET = "FzORQ587PgGBoOAdmxzCjaxQi8klUi"
 
 # 配置上传图片
-MEDIA_URL = "/static/media/"
+MEDIA_URL = "/static/media/" # 七牛云配置代替
 # 配置该URL对应的物理目录存储地址
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
@@ -190,3 +190,23 @@ HAYSTACK_CONNECTIONS = {
 }
 # 当添加、修改、删除数据时，自动生成索引
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# 七牛云配置
+# 七牛云密钥等配置
+QINIU_ACCESS_KEY = 'AQwJ7E7CC75IzQuwekU_BIXNSnx0oqebhBXxVxYr'
+QINIU_SECRET_KEY = 'vLgXifjTd9FJDaKLILBdj66WBiSRi5WtHNFYSqGZ'
+QINIU_BUCKET_NAME = 'img-xiaji20'
+QINIU_BUCKET_DOMAIN = 'pmzxfu47p.bkt.clouddn.com'
+QINIU_SECURE_URL = False  # 使用http
+PREFIX_URL = 'http://'
+
+# # 上传文件地址配置
+# MEDIA_URL = PREFIX_URL + QINIU_BUCKET_DOMAIN + "/"
+# # 上传文件的存储引擎配置(之前上传django自带)
+# DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuStorage'
+#
+# # django中静态文件的存储
+# # 静态文件的url配置
+# STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
+# # 静态文件的存储引擎
+# STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'

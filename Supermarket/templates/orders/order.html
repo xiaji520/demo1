@@ -18,13 +18,14 @@
             </a>
         </div>
         <h1 class="am-header-title">
-            <a href="" class="">确认订单</a>
+            <a href="" class="">确认支付</a>
         </h1>
     </header>
+    <div style="height: 49px;"></div>
 {% endblock %}
 
 {% block content %}
-     <h5 class="order-tit">收货人信息</h5>
+    <h5 class="order-tit">收货人信息</h5>
     <div class="order-name">
         <p class="order-tele">{{ order.username }}&nbsp;&nbsp;&nbsp;{{ order.phone }}</p>
         <p class="order-add">{{ order.address }}</p>
@@ -45,48 +46,49 @@
     <ul class="order-infor">
         <li class="order-infor-first">
             <span>商品总计：</span>
-            <i>￥{{ order.order_amount }}</i>
+            <i>￥{{ order.goods_total_price }}</i>
         </li>
         <li class="order-infor-first">
             <span>运输方式：{{ order.transport }}</span>
             <i>运费：￥{{ order.transport_price }}</i>
         </li>
-
     </ul>
-    <ul class="pay-style">
-        <li>
-            <img src="{% static 'images/zhi.png' %}" width="50"/>
-            <span>
-		   	 		<p>支付宝</p>
-		   	 		<p class="descript">推荐有支付宝账号的用户使用</p>
-		   	 	</span>
-            <label class="am-radio-inline">
-                <input type="radio" checked="checked" name="radio10" value="1" data-am-ucheck>
-            </label>
-        </li>
-        <li>
-            <img src="{% static 'images/wei.png' %}" width="50"/>
-            <span>
-		   	 		<p>微信支付</p>
-		   	 		<p class="descript">推荐安装微信5.0及以上版本的使用</p>
-		   	 	</span>
-            <label class="am-radio-inline">
-                <input type="radio" name="radio10" value="1" data-am-ucheck>
-            </label>
-        </li>
-
-    </ul>
-
     <div style="background: #eee; height: 10px;"></div>
     <textarea placeholder="备注说明" class="bz-infor"></textarea>
     <div style="background: #eee; height: 10px;"></div>
-    <div style="height: 55px;"></div>
+
+    <ul class="pay-style">
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="order_sn" value="{{ order.order_sn }}">
+            {% for payment in payments %}
+                <li>
+                    <img src="{{ MEDIA_URL }}{{ payment.logo }}" width="50"/>
+                    <span>
+		   	 		<p>{{ payment.name }}</p>
+		   	 		<p class="descript">{{ payment.brief }}</p>
+		   	 	</span>
+                    <label class="am-radio-inline">
+                        <input type="radio" {% if payment.is_tj %}checked="checked"{% endif %} name="payment"
+                               value="{{ payment.pk }}" data-am-ucheck>
+                    </label>
+                </li>
+            {% endfor %}
+        </form>
+    </ul>
+
+
     <div class="shop-fix">
         <div class="order-text">
-            应付总额：<span>￥{{ total }}</span>
+            应付总额：<span>￥{{ order.order_price }}</span>
         </div>
-        <a href="pay.html" class="js-btn">确认支付</a>
+        <a href="javascript:;" class="js-btn">确认支付</a>
     </div>
+    <div style="height: 55px;"></div>
+
+
+
+
     <!--底部-->
     <div style="height: 55px;"></div>
     <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default sq-foot am-no-layout" id="">
@@ -124,4 +126,32 @@
             </li>
         </ul>
     </div>
+{% endblock %}
+
+{% block footer_js %}
+    <script>
+        $(function () {
+            //点击按钮确认支付
+            $(".js-btn").on('click', function () {
+                //准备数据
+                var data = $("form").serialize();
+                //发起请求
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'orders:确认支付' %}",
+                    data: data,
+                    dataType: "json",
+                    success: function (data) {
+                        {#console.debug(data);#}
+                        if (data.code == 0) {
+                            //成功跳转到支付地址
+                            location.href = data.data;
+                        } else {
+                            alert(data.errmsg);
+                        }
+                    }
+                });
+            })
+        })
+    </script>
 {% endblock %}
